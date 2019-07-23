@@ -1,19 +1,13 @@
 import numpy as np
 
-class Field:
+from rectangle import Rectangle
 
-    def __init__(self, width, length, color):
-        self.width = width
-        self.length = length
+class Field(Rectangle):
 
-        self.left = -length / 2.0
-        self.right = length / 2.0
-        self.top = -width / 2.0
-        self.bottom = width / 2.0
-
+    def __init__(self, width, length, color, goal_width):
+        super().__init__([0, 0], width, length)
         self.color = color
-
-        self.position = np.array([0.0, 0.0])
+        self.goal_width = goal_width
 
 
     def handle_collison(self, ball, vel_multiplier = -1):
@@ -25,13 +19,17 @@ class Field:
             ball.mul_y_vel(vel_multiplier)
             ball.set_bottom(self.bottom)
 
-        if(ball.get_left() < self.left):
-            ball.mul_x_vel(vel_multiplier)
-            ball.set_left(self.left)
+        if ball.get_left() < self.left:
+            if ball.get_bottom() > self.goal_width / 2.0 or ball.get_top() < -self.goal_width / 2.0:
+                ball.mul_x_vel(vel_multiplier)
+                ball.set_left(self.left)
 
-        if(ball.get_right() > self.right):
-            ball.mul_x_vel(vel_multiplier)
-            ball.set_right(self.right)   
+        if ball.get_right() > self.right :
+            testA = ball.get_bottom() > self.goal_width / 2.0
+            testB = ball.get_top() < -self.goal_width / 2.0
+            if ball.get_bottom() > self.goal_width / 2.0 or ball.get_top() < -self.goal_width / 2.0:
+                ball.mul_x_vel(vel_multiplier)
+                ball.set_right(self.right)   
 
     def draw(self, surface, camera):
         camera.draw_rect(surface, self.color, self)

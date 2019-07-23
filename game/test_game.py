@@ -11,6 +11,7 @@ from field import Field
 from ball import Ball
 from player import Player
 from team import Team
+from goal import Goal
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
@@ -37,6 +38,11 @@ PLAYER_RADIUS = 0.4
 KICK_RADIUS = 0.6
 PLAYER_HEIGHT = 1.8
 PLAYER_WEIGHT = 70
+KICK_MAX_MOMENTUM = 13
+KICK_WAIT_TIME = 1
+
+GOAL_WIDTH = 4
+GOAL_DEPTH = 1.5
 
 HOME_TEAM_COLOR = (51, 102, 153)
 AWAY_TEAM_COLOR = (204, 51, 51)
@@ -56,24 +62,40 @@ def main():
     clock = pygame.time.Clock()
 
     camera = Camera(CAMERA_POS, PIXELS_PER_METER, size)
-    field = Field(FIELD_WIDTH, FIELD_LENGTH, FIELD_COLOR)
-    outer_field = Field(OUTER_FIELD_WIDTH, OUTER_FIELD_LENGTH, OUTER_FIELD_COLOR)
+    field = Field(FIELD_WIDTH, FIELD_LENGTH, FIELD_COLOR, GOAL_WIDTH)
+    outer_field = Field(OUTER_FIELD_WIDTH, OUTER_FIELD_LENGTH, OUTER_FIELD_COLOR, 0)
     ball = Ball(BALL_POS, BALL_RADIUS, BALL_WEIGHT)
+    home_goal = Goal([-FIELD_LENGTH/2 - GOAL_DEPTH/2, 0], GOAL_WIDTH, GOAL_DEPTH)
+    away_goal = Goal([FIELD_LENGTH/2 + GOAL_DEPTH/2, 0], GOAL_WIDTH, GOAL_DEPTH)
     home_team_players = []
     away_team_players = []
 
     # random.seed(42)
 
     for i in range(TEAM_SIZE):
-        home_team_players.append(Player([random.uniform(-FIELD_LENGTH/2, 0), random.uniform(-FIELD_WIDTH/2, FIELD_WIDTH/2)], PLAYER_RADIUS, PLAYER_WEIGHT, KICK_RADIUS, PLAYER_HEIGHT))
-        away_team_players.append(Player([random.uniform(0, FIELD_LENGTH/2), random.uniform(-FIELD_WIDTH/2, FIELD_WIDTH/2)], PLAYER_RADIUS, PLAYER_WEIGHT, KICK_RADIUS, PLAYER_HEIGHT))
+        home_team_players.append(Player(
+            [random.uniform(-FIELD_LENGTH/2, 0), random.uniform(-FIELD_WIDTH/2, FIELD_WIDTH/2)], 
+            PLAYER_RADIUS, 
+            PLAYER_WEIGHT, 
+            KICK_RADIUS, 
+            KICK_MAX_MOMENTUM,
+            KICK_WAIT_TIME, 
+            PLAYER_HEIGHT))
+        away_team_players.append(Player(
+            [random.uniform(0, FIELD_LENGTH/2), random.uniform(-FIELD_WIDTH/2, FIELD_WIDTH/2)], 
+            PLAYER_RADIUS, 
+            PLAYER_WEIGHT, 
+            KICK_RADIUS,
+            KICK_MAX_MOMENTUM,
+            KICK_WAIT_TIME, 
+            PLAYER_HEIGHT))
 
     home_team = Team(home_team_players, HOME_TEAM_COLOR)
     away_team = Team(away_team_players, AWAY_TEAM_COLOR)
 
     # ball.velocity = away_team_players[0].position
     ball.velocity = np.array([30, 12])
-    game = Game(ball, home_team, away_team, field, outer_field, 90, FRICTION, 9.81)
+    game = Game(ball, home_team, away_team, home_goal, away_goal, field, outer_field, 90, FRICTION, 9.81)
 
     while not done:
 

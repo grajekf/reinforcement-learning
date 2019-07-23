@@ -6,15 +6,34 @@ from entity import Entity
 
 class Player(Entity):
 
-    def __init__(self, position, radius, weight, kick_radius, height):
+    def __init__(self, position, radius, weight, kick_radius, kick_max_force, kick_wait_time, height):
         super().__init__(position, radius, weight)
         self.kick_radius = kick_radius
         self.height = height
+        self.kick_wait_time = kick_wait_time
+        self.time_since_last_kick = 0
 
     def draw(self, surface, camera, color):
         camera.draw_circle(surface, color, self.position, self.radius)
         camera.draw_circle(surface, (0, 0, 0), self.position, self.radius, 1)
         camera.draw_circle(surface, (255, 255, 255), self.position, self.kick_radius, 1)
+
+
+    def do_kick(self, ball, power):
+        if self.time_since_last_kick > self.kick_wait_time:
+            vector_between = ball.position - self.position
+            distance = np.sqrt(np.sum((vector_between)**2))
+
+            if distance <= self.kick_radius + ball.radius:
+                normal = vector_between / distance
+                added_velocity = normal * power / ball.weight
+                ball.velocity = ball.velocity + added_velocity
+
+            self.time_since_last_kick = 0
+
+    def update(self, passed_time, friction):
+        super().update(passed_time, friction)
+        self.time_since_last_kick += passed_time
 
 
     def handle_ball_collision(self, ball):

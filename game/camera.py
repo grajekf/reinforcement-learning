@@ -29,6 +29,7 @@ class Camera:
 
         pygame.draw.rect(surface, color, (x, y, length, width), thickness)
 
+
     def draw_circle(self, surface, color, position, radius, thickness = 0):
         x, y = self.position_to_screen_space(position)
         radius = int(self.dimension_to_camera_space(radius))

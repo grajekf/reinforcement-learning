@@ -39,3 +39,13 @@ class Entity:
 
     def set_right(self, value):
         self.position[0] = value - self.radius
+
+    def update(self, passed_time, friction):
+        self.update_velocity(passed_time, friction)
+        self.update_position(passed_time)
+
+    def update_velocity(self, passed_time, friction):
+        self.velocity = self.velocity * (1 - friction * passed_time) + self.acceleration * passed_time
+
+    def update_position(self, passed_time):
+        self.position = self.position + self.velocity * passed_time

@@ -1,19 +1,17 @@
+from rectangle import Rectangle
+class Goal(Rectangle):
 
-class Goal:
+    def __init__(self, position, width, depth):
+        super().__init__(position, width, depth)
+        self.goal_subscribers = []
 
-    def __init__(self, position, width, height, depth):
-        self.width = width
-        self.height = height
-        self.depth = depth
-        self.position = position
+    def draw(self, surface, camera):
+        camera.draw_rect(surface, (225, 225, 225), self)
 
-        self.left = self.position[0] - self.depth / 2.0
-        self.right = self.position[0] + self.depth / 2.0
-        self.top = self.position[1] - self.width / 2.0
-        self.bottom = self.position[1] + self.width / 2.0
+    def subscribe(self, handler):
+        self.goal_subscribers.append(handler)
 
-
-    def is_ball_inside(self, ball):
-        return ball.get_left() > self.left and ball.get_right() < self.right and ball.get_top() > self.top and ball.get_bottom() < self.bottom
-
-    # def intersects_with_circle(self, circle):
+    def handle_collison(self, ball):
+        if self.is_circle_inside(ball):
+            for subscriber in self.goal_subscribers:
+                subscriber(ball)
