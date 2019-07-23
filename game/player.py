@@ -2,16 +2,14 @@ import numpy as np
 import math
 
 import physics
+from entity import Entity
 
-class Player:
+class Player(Entity):
 
-    def __init__(self, position, radius, kick_radius, height, weight):
-        self.position = np.array(position)
-        self.velocity = np.array([0.0, 0.0])
-        self.radius = radius
+    def __init__(self, position, radius, weight, kick_radius, height):
+        super().__init__(position, radius, weight)
         self.kick_radius = kick_radius
         self.height = height
-        self.weight = weight
 
     def draw(self, surface, camera, color):
         camera.draw_circle(surface, color, self.position, self.radius)
@@ -30,10 +28,7 @@ class Player:
             self.position = contact_point - normal * self.radius
             ball.position = contact_point + normal * ball.radius
 
-            # self.velocity = np.array([0, 0])
-            # ball.velocity = np.array([0, 0])
-
-
+            #Simulate collision
             player_vel = np.sqrt(np.sum(self.velocity**2))
             ball_vel = np.sqrt(np.sum(ball.velocity**2))
 

@@ -1,11 +1,12 @@
 
 class Game:
 
-    def __init__(self, ball, home_team, away_team, field, duration, friction, gravity):
+    def __init__(self, ball, home_team, away_team, field, outer_field, duration, friction, gravity):
         self.ball = ball
         self.home_team = home_team
         self.away_team = away_team
         self.field = field
+        self.outer_field = outer_field
         self.duration = duration
         self.current_time = 0.0
         self.friction = friction
@@ -22,15 +23,18 @@ class Game:
         for player in self.away_team.players:
             self.update_position(player, passed_time)   
 
-        self.field.handle_ball_collison(self.ball)
+        self.field.handle_collison(self.ball)
         
         for player in self.home_team.players:
             player.handle_ball_collision(self.ball)
+            self.outer_field.handle_collison(player, 1.0)
 
         for player in self.away_team.players:
             player.handle_ball_collision(self.ball)
+            self.outer_field.handle_collison(player, 1.0)
 
     def draw(self, surface, camera):
+        self.outer_field.draw(surface, camera)
         self.field.draw(surface, camera)
         self.ball.draw(surface, camera)
         self.home_team.draw(surface, camera)
