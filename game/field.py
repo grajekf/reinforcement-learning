@@ -22,19 +22,19 @@ class Field:
 
     def handle_ball_collison(self, ball):
         if ball.get_top() < self.top:
-            ball.mul_y_vel(-0.9)
+            ball.mul_y_vel(-1)
             ball.set_top(self.top)
 
         if ball.get_bottom() > self.bottom:
-            ball.mul_y_vel(-0.9)
+            ball.mul_y_vel(-1)
             ball.set_bottom(self.bottom)
 
         if(ball.get_left() < self.left):
-            ball.mul_x_vel(-0.9)
+            ball.mul_x_vel(-1)
             ball.set_left(self.left)
 
         if(ball.get_right() > self.right):
-            ball.mul_x_vel(-0.9)
+            ball.mul_x_vel(-1)
             ball.set_right(self.right)
 
     def draw(self, surface, camera):

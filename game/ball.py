@@ -41,4 +41,5 @@ class Ball:
         self.position[0] = value - self.radius
 
     def draw(self, surface, camera):
-        camera.draw_circle(surface, (255, 255, 255), self)
+        camera.draw_circle(surface, (255, 255, 255), self.position, self.radius)
+        # camera.draw_circle(surface, (0, 0, 0), self.position, self.radius, 1)
