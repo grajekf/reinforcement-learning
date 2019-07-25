@@ -36,8 +36,9 @@ BALL_WEIGHT = 0.5
 TEAM_SIZE = 5
 PLAYER_RADIUS = 0.4
 KICK_RADIUS = 1.6
-PLAYER_HEIGHT = 1.8
 PLAYER_WEIGHT = 70
+PLAYER_MAX_VELOCITY = 9
+PLAYER_MAX_RUN_FORCE = 200
 KICK_MAX_MOMENTUM = 13
 KICK_WAIT_TIME = 0.5
 
@@ -62,8 +63,8 @@ def main():
     clock = pygame.time.Clock()
 
     camera = Camera(CAMERA_POS, PIXELS_PER_METER, size)
-    field = Field(FIELD_WIDTH, FIELD_LENGTH, FIELD_COLOR, GOAL_WIDTH)
-    outer_field = Field(OUTER_FIELD_WIDTH, OUTER_FIELD_LENGTH, OUTER_FIELD_COLOR, 0)
+    field = Field(FIELD_WIDTH, FIELD_LENGTH, FIELD_COLOR, GOAL_WIDTH, GOAL_DEPTH)
+    outer_field = Field(OUTER_FIELD_WIDTH, OUTER_FIELD_LENGTH, OUTER_FIELD_COLOR, 0, 0)
     ball = Ball(BALL_POS, BALL_RADIUS, BALL_WEIGHT)
     home_goal = Goal([-FIELD_LENGTH/2 - GOAL_DEPTH/2, 0], GOAL_WIDTH, GOAL_DEPTH)
     away_goal = Goal([FIELD_LENGTH/2 + GOAL_DEPTH/2, 0], GOAL_WIDTH, GOAL_DEPTH)
@@ -80,7 +81,7 @@ def main():
             KICK_RADIUS, 
             KICK_MAX_MOMENTUM,
             KICK_WAIT_TIME, 
-            PLAYER_HEIGHT))
+            PLAYER_MAX_VELOCITY))
         away_team_players.append(Player(
             [random.uniform(0, FIELD_LENGTH/2), random.uniform(-FIELD_WIDTH/2, FIELD_WIDTH/2)], 
             PLAYER_RADIUS, 
@@ -88,7 +89,7 @@ def main():
             KICK_RADIUS,
             KICK_MAX_MOMENTUM,
             KICK_WAIT_TIME, 
-            PLAYER_HEIGHT))
+            PLAYER_MAX_VELOCITY))
 
     home_team = Team(home_team_players, HOME_TEAM_COLOR)
     away_team = Team(away_team_players, AWAY_TEAM_COLOR)

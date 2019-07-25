@@ -42,9 +42,8 @@ class Game:
         for player in self.away_team.players:
             player.update(passed_time) 
 
-
-        # self.home_goal.handle_collison(self.ball)
-        # self.away_goal.handle_collison(self.ball)
+        self.home_goal.handle_collison(self.ball)
+        self.away_goal.handle_collison(self.ball)
 
 
     def draw(self, surface, camera):
@@ -57,18 +56,18 @@ class Game:
         self.away_team.draw(surface, camera)
 
     def notify_home_goal(self, ball):
-        print("Goal for the home team!")
-        self.home_score += 1
-        print(f"Score: {self.home_score} - {self.away_score}")
-        self.reset_ball()
-
-    def notify_away_goal(self, ball):
         print("Goal for the away team!")
         self.away_score += 1
         print(f"Score: {self.home_score} - {self.away_score}")
         self.reset_ball()
 
+    def notify_away_goal(self, ball):
+        print("Goal for the home team!")
+        self.home_score += 1
+        print(f"Score: {self.home_score} - {self.away_score}")
+        self.reset_ball()
+
     def reset_ball(self):
-        self.ball.position = np.array([0, 0])
-        self.ball.velocity = np.random.uniform(-30, 30, 2)
+        self.ball.set_position([0, 0])
+        self.ball.set_velocity(np.random.uniform(-30, 30, 2))
         

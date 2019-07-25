@@ -10,13 +10,13 @@ EPS = 1e-5
 
 class Player(Entity):
 
-    def __init__(self, position, radius, weight, kick_radius, kick_max_force, kick_wait_time, height):
+    def __init__(self, position, radius, weight, kick_radius, kick_max_force, kick_wait_time, max_speed):
         super().__init__(position, radius, weight)
         self.velocity = np.random.uniform(-5, 5, 2)
         self.foot = Entity(position, radius * FOOT_RADIUS_RATIO, weight * FOOT_WEIGHT_RATIO)
         self.kick_radius = kick_radius
         self.kick_max_force = kick_max_force
-        self.height = height
+        self.max_speed = max_speed
         self.kick_wait_time = kick_wait_time
         self.time_since_last_kick = kick_wait_time
 
@@ -48,5 +48,13 @@ class Player(Entity):
 
     def update(self, passed_time):
         super().update(passed_time)
-        # self.acceleration = np.random.uniform(-10, 10, 2)
+        if self.body.linearVelocity.length > self.max_speed:
+            current_velocity = np.array(self.body.linearVelocity)
+            normalized = current_velocity / self.body.linearVelocity.length
+
+            new_velocity = self.max_speed * normalized
+
+            print("Max velocity reached!")
+            self.body.setLinearVelocity(new_velocity.tolist())
+            
         self.time_since_last_kick += passed_time

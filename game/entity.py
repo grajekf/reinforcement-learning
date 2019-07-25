@@ -1,7 +1,7 @@
 
 import math
 import numpy as np
-from Box2D import b2FixtureDef, b2CircleShape
+from Box2D import b2FixtureDef, b2CircleShape, b2Transform
 
 import physics
 
@@ -32,4 +32,19 @@ class Entity:
 
     def set_velocity(self, velocity):
         self.body.ApplyLinearImpulse(velocity.tolist(), self.body.worldCenter, True)
+
+    def set_position(self, position):
+        self.position = np.array(position)
+        self.body.transform = [self.position.tolist(), 0]
+    def get_left(self):
+        return self.position[0] - self.radius
+
+    def get_right(self):
+        return self.position[0] + self.radius   
+
+    def get_top(self):
+        return self.position[1] - self.radius
+
+    def get_bottom(self):
+        return self.position[1] + self.radius   
 
