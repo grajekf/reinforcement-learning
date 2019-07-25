@@ -46,7 +46,7 @@ class Player(Entity):
 
                 self.time_since_last_kick = 0
 
-    def update(self, passed_time, friction):
-        super().update(passed_time, friction)
+    def update(self, passed_time):
+        super().update(passed_time)
         # self.acceleration = np.random.uniform(-10, 10, 2)
         self.time_since_last_kick += passed_time

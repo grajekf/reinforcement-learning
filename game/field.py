@@ -17,28 +17,16 @@ class Field(Rectangle):
 
         self.collision_rects = [upper_collision_rect, bottom_collision_rect, left_collision_rect, right_collision_rect]
 
-    def handle_collison(self, ball, vel_multiplier = -1):
-        for rect in self.collision_rects:
-            rect.handle_collison(ball, vel_multiplier)
-        # if ball.get_top() < self.top:
-        #     ball.mul_y_vel(vel_multiplier)
-        #     ball.set_top(self.top)
+    def register_in_world(self, world):
+        # for rect in self.collision_rects:
+        #     rect.register_in_world(world)
 
-        # if ball.get_bottom() > self.bottom:
-        #     ball.mul_y_vel(vel_multiplier)
-        #     ball.set_bottom(self.bottom)
-
-        # if ball.get_left() < self.left:
-        #     if ball.get_bottom() > self.goal_width / 2.0 or ball.get_top() < -self.goal_width / 2.0:
-        #         ball.mul_x_vel(vel_multiplier)
-        #         ball.set_left(self.left)
-
-        # if ball.get_right() > self.right :
-        #     testA = ball.get_bottom() > self.goal_width / 2.0
-        #     testB = ball.get_top() < -self.goal_width / 2.0
-        #     if ball.get_bottom() > self.goal_width / 2.0 or ball.get_top() < -self.goal_width / 2.0:
-        #         ball.mul_x_vel(vel_multiplier)
-        #         ball.set_right(self.right)   
+        self.boundary = world.CreateStaticBody(position=self.position.tolist())
+        self.boundary.CreateEdgeChain([(self.left, self.top), 
+            (self.left, self.bottom),
+            (self.right, self.bottom),
+            (self.right, self.top),
+            (self.left, self.top)])
 
     def draw(self, surface, camera):
         camera.draw_rect(surface, self.color, self)

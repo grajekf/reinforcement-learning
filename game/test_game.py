@@ -94,8 +94,11 @@ def main():
     away_team = Team(away_team_players, AWAY_TEAM_COLOR)
 
     # ball.velocity = away_team_players[0].position
-    ball.velocity = np.array([10, 8])
-    game = Game(ball, home_team, away_team, home_goal, away_goal, field, outer_field, 90, FRICTION, 9.81)
+    game = Game(ball, home_team, away_team, home_goal, away_goal, field, outer_field, 90, FRICTION)
+
+    game.init_physics()
+
+    ball.set_velocity(np.array([10, 8]))
 
     while not done:
 

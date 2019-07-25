@@ -1,8 +1,9 @@
 import numpy as np
+from Box2D import b2World
 
 class Game:
 
-    def __init__(self, ball, home_team, away_team, home_goal, away_goal, field, outer_field, duration, friction, gravity):
+    def __init__(self, ball, home_team, away_team, home_goal, away_goal, field, outer_field, duration, friction):
         self.ball = ball
         self.home_team = home_team
         self.away_team = away_team
@@ -15,35 +16,36 @@ class Game:
         self.duration = duration
         self.current_time = 0.0
         self.friction = friction
-        self.gravity = gravity
         self.home_score = 0
         self.away_score = 0
+        self.world = b2World(gravity=(0, 0))
+
+    def init_physics(self):
+        self.ball.register_in_world(self.world, self.friction)
+
+        for player in self.home_team.players:
+            player.register_in_world(self.world, self.friction)
+
+        for player in self.away_team.players:
+            player.register_in_world(self.world, self.friction)
+
+        self.field.register_in_world(self.world)
 
 
     def update(self, passed_time):
-        self.ball.update(passed_time, self.friction)
+        self.world.Step(passed_time, 6, 2)
+        self.ball.update(passed_time)
 
         for player in self.home_team.players:
-            player.update(passed_time, self.friction)
+            player.update(passed_time)
 
         for player in self.away_team.players:
-            player.update(passed_time, self.friction) 
+            player.update(passed_time) 
 
 
-        self.home_goal.handle_collison(self.ball)
-        self.away_goal.handle_collison(self.ball)
+        # self.home_goal.handle_collison(self.ball)
+        # self.away_goal.handle_collison(self.ball)
 
-        self.field.handle_collison(self.ball)
-        
-        for player in self.home_team.players:
-            player.handle_collision(self.ball)
-            # player.do_kick(self.ball, 1.0)
-            self.outer_field.handle_collison(player, -1.0)
-
-        for player in self.away_team.players:
-            player.handle_collision(self.ball)
-            # player.do_kick(self.ball, 1.0)
-            self.outer_field.handle_collison(player, -1.0)
 
     def draw(self, surface, camera):
         self.outer_field.draw(surface, camera)
