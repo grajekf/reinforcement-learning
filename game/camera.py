@@ -1,3 +1,5 @@
+import math
+
 import pygame
 import numpy as np
 
@@ -38,4 +40,6 @@ class Camera:
         # print(radius)
         # print(color)
         # print(thickness)
+        if math.isnan(x) or math.isnan(y):
+            print("NaN!")
         pygame.draw.circle(surface, color, (int(x), int(y)), radius, thickness)

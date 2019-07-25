@@ -36,12 +36,14 @@ class Game:
         self.field.handle_collison(self.ball)
         
         for player in self.home_team.players:
-            player.handle_ball_collision(self.ball)
-            self.outer_field.handle_collison(player, 1.0)
+            player.handle_collision(self.ball)
+            # player.do_kick(self.ball, 1.0)
+            self.outer_field.handle_collison(player, -1.0)
 
         for player in self.away_team.players:
-            player.handle_ball_collision(self.ball)
-            self.outer_field.handle_collison(player, 1.0)
+            player.handle_collision(self.ball)
+            # player.do_kick(self.ball, 1.0)
+            self.outer_field.handle_collison(player, -1.0)
 
     def draw(self, surface, camera):
         self.outer_field.draw(surface, camera)

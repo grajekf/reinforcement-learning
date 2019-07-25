@@ -35,11 +35,11 @@ BALL_WEIGHT = 0.5
 
 TEAM_SIZE = 5
 PLAYER_RADIUS = 0.4
-KICK_RADIUS = 0.6
+KICK_RADIUS = 1.6
 PLAYER_HEIGHT = 1.8
 PLAYER_WEIGHT = 70
 KICK_MAX_MOMENTUM = 13
-KICK_WAIT_TIME = 1
+KICK_WAIT_TIME = 0.5
 
 GOAL_WIDTH = 4
 GOAL_DEPTH = 1.5
@@ -47,7 +47,7 @@ GOAL_DEPTH = 1.5
 HOME_TEAM_COLOR = (51, 102, 153)
 AWAY_TEAM_COLOR = (204, 51, 51)
 
-FRICTION = 0.0
+FRICTION = 0.00003
 
 
 
@@ -94,7 +94,7 @@ def main():
     away_team = Team(away_team_players, AWAY_TEAM_COLOR)
 
     # ball.velocity = away_team_players[0].position
-    ball.velocity = np.array([30, 12])
+    ball.velocity = np.array([10, 8])
     game = Game(ball, home_team, away_team, home_goal, away_goal, field, outer_field, 90, FRICTION, 9.81)
 
     while not done:
