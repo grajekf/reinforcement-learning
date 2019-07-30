@@ -1,0 +1,27 @@
+{
+    "field": {
+        "length": 35,
+        "width": 20
+    },
+    "ball": {
+        "radius": 0.2,
+        "weight": 0.5
+    },
+    "team_size": 5,
+    "friction": 0.6,
+    "goal": {
+        "width": 4,
+        "depth": 0.5
+    },
+    "player": {
+        "radius": 0.4,
+        "kick_radius": 1.0,
+        "weight": 70,
+        "max_velocity": 9,
+        "max_run_force": 200,
+        "kick": {
+            "max_momentum": 30,
+            "wait_time": 0.5
+        }
+    }
+}

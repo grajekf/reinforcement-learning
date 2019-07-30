@@ -2,18 +2,17 @@ import numpy as np
 import math
 
 import physics
-from entity import Entity
+from circle import Circle
 
 FOOT_WEIGHT_RATIO = 0.03
 FOOT_RADIUS_RATIO = 0.2
 EPS = 1e-5
 
-class Player(Entity):
+class Player(Circle):
 
     def __init__(self, position, radius, weight, kick_radius, kick_max_force, kick_wait_time, max_speed):
         super().__init__(position, radius, weight)
-        self.velocity = np.random.uniform(-5, 5, 2)
-        self.foot = Entity(position, radius * FOOT_RADIUS_RATIO, weight * FOOT_WEIGHT_RATIO)
+        self.foot = Circle(position, radius * FOOT_RADIUS_RATIO, weight * FOOT_WEIGHT_RATIO)
         self.kick_radius = kick_radius
         self.kick_max_force = kick_max_force
         self.max_speed = max_speed
@@ -35,15 +34,12 @@ class Player(Entity):
 
             if distance <= self.kick_radius + ball.radius:
                 normal = vector_between / distance
-                # Foot touches ball
-                foot_center_point = ball.position - normal * (ball.radius + self.foot.radius - EPS)
-                self.foot.position = foot_center_point
-                self.foot.velocity = power * self.kick_max_force * normal
+                
+                ball_impulse_vector = normal * power * self.kick_max_force
 
-                collided = self.foot.handle_collision(ball)
+                ball.add_velocity(ball_impulse_vector)
 
-                self.did_kick = True
-
+                # maybe reset always when kicking, even when the player misses?
                 self.time_since_last_kick = 0
 
     def update(self, passed_time):

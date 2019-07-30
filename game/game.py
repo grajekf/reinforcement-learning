@@ -1,4 +1,5 @@
 import numpy as np
+import random
 from Box2D import b2World
 
 class Game:
@@ -14,11 +15,17 @@ class Game:
         self.field = field
         self.outer_field = outer_field
         self.duration = duration
+        self.finished = False
         self.current_time = 0.0
         self.friction = friction
         self.home_score = 0
         self.away_score = 0
         self.world = b2World(gravity=(0, 0))
+
+    @classmethod
+    def from_config(cls, config):
+        ball = Ball.from_config(config)
+
 
     def init_physics(self):
         self.ball.register_in_world(self.world, self.friction)
@@ -38,12 +45,18 @@ class Game:
 
         for player in self.home_team.players:
             player.update(passed_time)
+            # player.do_kick(self.ball, 1.0)
 
         for player in self.away_team.players:
             player.update(passed_time) 
+            # player.do_kick(self.ball, 1.0)
 
         self.home_goal.handle_collison(self.ball)
         self.away_goal.handle_collison(self.ball)
+
+        self.current_time += passed_time
+        if self.current_time >= self.duration:
+            self.finished = True
 
 
     def draw(self, surface, camera):
@@ -60,14 +73,36 @@ class Game:
         self.away_score += 1
         print(f"Score: {self.home_score} - {self.away_score}")
         self.reset_ball()
+        self.reset_players()
 
     def notify_away_goal(self, ball):
         print("Goal for the home team!")
         self.home_score += 1
         print(f"Score: {self.home_score} - {self.away_score}")
         self.reset_ball()
+        self.reset_players()
 
     def reset_ball(self):
         self.ball.set_position([0, 0])
-        self.ball.set_velocity(np.random.uniform(-30, 30, 2))
+        self.ball.set_velocity(np.array([0, 0]))
+        # self.ball.set_velocity(np.random.uniform(-10, 10, 2))
+
+    def reset_players(self):
+        for player in self.home_team.players:
+            player.set_position([random.uniform(-self.field.length / 2 + player.radius, 0), 
+                random.uniform(-self.field.width / 2 + player.radius, self.field.width / 2 - player.radius)])
+
+        for player in self.away_team.players:
+            player.set_position([random.uniform(0, self.field.length / 2 - player.radius), 
+                random.uniform(-self.field.width / 2 + player.radius, self.field.width / 2 - player.radius)])
+        
+    def reset(self):
+        self.home_score = 0
+        self.away_score = 0
+
+        self.current_time = 0
+
+        self.reset_ball()
+        self.reset_players()
+
         

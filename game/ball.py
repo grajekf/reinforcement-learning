@@ -1,8 +1,8 @@
 import numpy as np
 
-from entity import Entity
+from circle import Circle
 
-class Ball(Entity):
+class Ball(Circle):
 
     def __init__(self, position, radius, weight):
         super().__init__(position, radius, weight)

@@ -35,11 +35,11 @@ BALL_WEIGHT = 0.5
 
 TEAM_SIZE = 5
 PLAYER_RADIUS = 0.4
-KICK_RADIUS = 1.6
+KICK_RADIUS = 1.0
 PLAYER_WEIGHT = 70
 PLAYER_MAX_VELOCITY = 9
 PLAYER_MAX_RUN_FORCE = 200
-KICK_MAX_MOMENTUM = 13
+KICK_MAX_MOMENTUM = 30
 KICK_WAIT_TIME = 0.5
 
 GOAL_WIDTH = 4
@@ -48,7 +48,7 @@ GOAL_DEPTH = 1.5
 HOME_TEAM_COLOR = (51, 102, 153)
 AWAY_TEAM_COLOR = (204, 51, 51)
 
-FRICTION = 0.00003
+FRICTION = 0.6
 
 
 
@@ -75,7 +75,7 @@ def main():
 
     for i in range(TEAM_SIZE):
         home_team_players.append(Player(
-            [random.uniform(-FIELD_LENGTH/2, 0), random.uniform(-FIELD_WIDTH/2, FIELD_WIDTH/2)], 
+            [0, 0], 
             PLAYER_RADIUS, 
             PLAYER_WEIGHT, 
             KICK_RADIUS, 
@@ -83,7 +83,7 @@ def main():
             KICK_WAIT_TIME, 
             PLAYER_MAX_VELOCITY))
         away_team_players.append(Player(
-            [random.uniform(0, FIELD_LENGTH/2), random.uniform(-FIELD_WIDTH/2, FIELD_WIDTH/2)], 
+            [0, 0], 
             PLAYER_RADIUS, 
             PLAYER_WEIGHT, 
             KICK_RADIUS,
@@ -98,8 +98,10 @@ def main():
     game = Game(ball, home_team, away_team, home_goal, away_goal, field, outer_field, 90, FRICTION)
 
     game.init_physics()
+        
+    game.reset_players()
 
-    ball.set_velocity(np.array([10, 8]))
+    ball.add_velocity(np.array([10, 8]))
 
     while not done:
 
