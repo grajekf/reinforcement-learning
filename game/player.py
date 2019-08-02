@@ -1,8 +1,8 @@
 import numpy as np
 import math
 
-import physics
-from circle import Circle
+import game.physics
+from game.circle import Circle
 
 FOOT_WEIGHT_RATIO = 0.03
 FOOT_RADIUS_RATIO = 0.2
@@ -18,6 +18,21 @@ class Player(Circle):
         self.max_speed = max_speed
         self.kick_wait_time = kick_wait_time
         self.time_since_last_kick = kick_wait_time
+
+    @classmethod
+    def from_config(cls, config):
+        player = config["player"]
+        radius = player["radius"]
+        weight = player["weight"]
+        max_v = player["max_velocity"]
+        max_run_force = player["max_run_force"]
+
+        kick = player["kick"]
+        kick_radius = kick["radius"]
+        kick_max_force = kick["max_momentum"]
+        kick_wait_time = kick["wait_time"]
+
+        return Player([0, 0], radius, weight, kick_radius, kick_max_force, kick_wait_time, max_v)
 
     def draw(self, surface, camera, color):
         camera.draw_circle(surface, color, self.position, self.radius)

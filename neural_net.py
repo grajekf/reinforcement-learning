@@ -1,4 +1,7 @@
-from keras import Dense, Input, Model
+from keras import Input, Model
+from keras.layers import Dense
+
+import numpy as np
 
 
 class FeedforwardModel:
@@ -11,7 +14,7 @@ class FeedforwardModel:
         for size in layer_sizes:
             layer = Dense(size, activation=activation)(layer)
 
-        outputs = Dense(8 * player_count, activation='linear')(layer)
+        outputs = Dense(8 * player_count, activation=activation)(layer)
 
         self.model = Model(inputs=inputs, outputs=outputs)
         self.player_count = player_count

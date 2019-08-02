@@ -15,10 +15,17 @@ class Match:
         self.final_scores = []
 
     def simulate(self, do_draw, **kwargs):
-        for i in range(self.repeats):
-            self.game.reset()
 
-            while not game.finished:
+        self.game.init_physics()
+
+        print(self.repeats)
+        for i in range(self.repeats):
+            clock = pygame.time.Clock()
+            self.game.reset()
+            self.game.init_physics()
+            
+
+            while not self.game.finished:
                 first_team_state = GameState.from_game(self.game)
                 second_team_state = first_team_state.get_complement()
 
@@ -32,8 +39,16 @@ class Match:
                     camera = kwargs["camera"]
 
                     surface.fill(BLACK)
-                    game.draw(screen, camera)
+                    self.game.draw(surface, camera)
+
+                    fps = int(clock.get_fps())
+                    font = pygame.font.SysFont(pygame.font.get_default_font(), 24)
+                    text_surface = font.render(f"FPS: {fps}",True, (255, 255, 255))
+                    surface.blit(text_surface, (50, 5))
+
                     pygame.display.flip()
+
+                clock.tick()
 
 
     

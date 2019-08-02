@@ -3,15 +3,18 @@
 import pygame
 import numpy as np
 
+import json
 import random
+import sys
 
-from camera import Camera
-from game import Game
-from field import Field
-from ball import Ball
-from player import Player
-from team import Team
-from goal import Goal
+from game.camera import Camera
+from game.game import Game
+from game.field import Field
+from game.ball import Ball
+from game.player import Player
+from game.team import Team
+from game.goal import Goal
+from game.player_position_generator import RandomPlayerPositionGenerator
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
@@ -50,11 +53,14 @@ AWAY_TEAM_COLOR = (204, 51, 51)
 
 FRICTION = 0.6
 
-
+def load_config(path):
+    with open(path, 'r') as json_file:
+        return json.load(json_file)
 
 
 def main():
     size = (1400, 800)
+    pygame.init()
     screen = pygame.display.set_mode(size)
     pygame.display.set_caption("Test")
 
@@ -63,64 +69,75 @@ def main():
     clock = pygame.time.Clock()
 
     camera = Camera(CAMERA_POS, PIXELS_PER_METER, size)
-    field = Field(FIELD_WIDTH, FIELD_LENGTH, FIELD_COLOR, GOAL_WIDTH, GOAL_DEPTH)
-    outer_field = Field(OUTER_FIELD_WIDTH, OUTER_FIELD_LENGTH, OUTER_FIELD_COLOR, 0, 0)
-    ball = Ball(BALL_POS, BALL_RADIUS, BALL_WEIGHT)
-    home_goal = Goal([-FIELD_LENGTH/2 - GOAL_DEPTH/2, 0], GOAL_WIDTH, GOAL_DEPTH)
-    away_goal = Goal([FIELD_LENGTH/2 + GOAL_DEPTH/2, 0], GOAL_WIDTH, GOAL_DEPTH)
-    home_team_players = []
-    away_team_players = []
+    # field = Field(FIELD_WIDTH, FIELD_LENGTH, GOAL_WIDTH, GOAL_DEPTH)
+    # outer_field = Field(OUTER_FIELD_WIDTH, OUTER_FIELD_LENGTH, 0, 0)
+    # ball = Ball(BALL_POS, BALL_RADIUS, BALL_WEIGHT)
+    # home_goal = Goal([-FIELD_LENGTH/2 - GOAL_DEPTH/2, 0], GOAL_WIDTH, GOAL_DEPTH)
+    # away_goal = Goal([FIELD_LENGTH/2 + GOAL_DEPTH/2, 0], GOAL_WIDTH, GOAL_DEPTH)
+    # home_team_players = []
+    # away_team_players = []
 
-    # random.seed(42)
+    # # random.seed(42)
 
-    for i in range(TEAM_SIZE):
-        home_team_players.append(Player(
-            [0, 0], 
-            PLAYER_RADIUS, 
-            PLAYER_WEIGHT, 
-            KICK_RADIUS, 
-            KICK_MAX_MOMENTUM,
-            KICK_WAIT_TIME, 
-            PLAYER_MAX_VELOCITY))
-        away_team_players.append(Player(
-            [0, 0], 
-            PLAYER_RADIUS, 
-            PLAYER_WEIGHT, 
-            KICK_RADIUS,
-            KICK_MAX_MOMENTUM,
-            KICK_WAIT_TIME, 
-            PLAYER_MAX_VELOCITY))
+    # for i in range(TEAM_SIZE):
+    #     home_team_players.append(Player(
+    #         [0, 0], 
+    #         PLAYER_RADIUS, 
+    #         PLAYER_WEIGHT, 
+    #         KICK_RADIUS, 
+    #         KICK_MAX_MOMENTUM,
+    #         KICK_WAIT_TIME, 
+    #         PLAYER_MAX_VELOCITY))
+    #     away_team_players.append(Player(
+    #         [0, 0], 
+    #         PLAYER_RADIUS, 
+    #         PLAYER_WEIGHT, 
+    #         KICK_RADIUS,
+    #         KICK_MAX_MOMENTUM,
+    #         KICK_WAIT_TIME, 
+    #         PLAYER_MAX_VELOCITY))
 
-    home_team = Team(home_team_players, HOME_TEAM_COLOR)
-    away_team = Team(away_team_players, AWAY_TEAM_COLOR)
+    # home_team = Team(home_team_players)
+    # away_team = Team(away_team_players)
 
-    # ball.velocity = away_team_players[0].position
-    game = Game(ball, home_team, away_team, home_goal, away_goal, field, outer_field, 90, FRICTION)
+    # # ball.velocity = away_team_players[0].position
+    # game = Game(ball, home_team, away_team, home_goal, away_goal, field, 90, FRICTION)
 
+    if len(sys.argv) < 2:
+        config_path = "configs/game/default.json"
+    else:
+        config_path = sys.argv[1]
+    config = load_config(config_path)
+    game = Game.from_config(config, RandomPlayerPositionGenerator())
+    
+    game.reset()
     game.init_physics()
-        
-    game.reset_players()
 
-    ball.add_velocity(np.array([10, 8]))
+    # ball.add_velocity(np.array([10, 8]))
 
-    while not done:
+    while not done and not game.finished:
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 done = True
     
         # Game logic should go here
-        game.update(1 / 60.0)
+        game.update(1 / 30.0)
     
 
         screen.fill(BLACK)
     
         # Drawing code should go here
         game.draw(screen, camera)
+
+        fps = int(clock.get_fps())
+        font = pygame.font.SysFont(pygame.font.get_default_font(), 24)
+        text_surface = font.render(f"FPS: {fps}",True, (255, 255, 255))
+        screen.blit(text_surface, (50, 5))
     
         pygame.display.flip()
 
-        clock.tick(60)
+        clock.tick()
 
     pygame.quit()
 

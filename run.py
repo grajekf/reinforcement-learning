@@ -3,6 +3,15 @@
 import argparse
 import json
 
+import pygame
+
+from game.player_position_generator import RandomPlayerPositionGenerator
+from game.game import Game
+from game.camera import Camera
+
+from neural_net import FeedforwardModel
+from match import Match
+
 
 def args():
     parser = argparse.ArgumentParser()
@@ -12,15 +21,32 @@ def args():
     args =  parser.parse_args()
     return args.game_config, args.train
 
+def load_config(path):
+    with open(path, 'r') as json_file:
+        return json.load(json_file)
 
 def main():
     game_config_path, do_train = args()
 
-    with open(game_config_path) as json_file:
-        game_config = json.load(json_file)
+    game_config = load_config(game_config_path)
+    player_position_generator = RandomPlayerPositionGenerator()
+    game = Game.from_config(game_config, player_position_generator)
 
-    print(game_config)
+    first_player = FeedforwardModel([50, 50, 50, 50], 'tanh', game_config["team_size"])
+    second_player = FeedforwardModel([50, 50, 50, 50], 'tanh', game_config["team_size"])
 
+    repeats = 5
+    time_step = 1/30.0
+
+    match = Match(first_player, second_player, repeats, game, time_step)
+
+    size = (1400, 800)
+    pygame.init()
+    screen = pygame.display.set_mode(size)
+    pygame.display.set_caption("Test")
+    camera = Camera([0, 0], 35, size)
+
+    match.simulate(True, camera=camera, surface=screen)
 
 
 if __name__ == "__main__":

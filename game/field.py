@@ -1,16 +1,27 @@
 import numpy as np
 
-from rectangle import Rectangle
+from game.rectangle import Rectangle
 
 COLLISION_RECT_DEPTH = 2
 
 class Field(Rectangle):
 
-    def __init__(self, width, length, color, goal_width, goal_depth):
+    def __init__(self, width, length, goal_width, goal_depth):
         super().__init__([0, 0], width, length)
-        self.color = color
         self.goal_width = goal_width
         self.goal_depth = goal_depth
+
+    @classmethod
+    def from_config(cls, config):
+        field = config["field"]
+        field_length = field["length"]
+        field_width = field["width"]
+
+        goal = config["goal"]
+        goal_width = goal["width"]
+        goal_depth = goal["depth"]
+
+        return Field(field_width, field_length, goal_width, goal_depth)
 
     def register_in_world(self, world):
 
@@ -29,8 +40,8 @@ class Field(Rectangle):
             (self.right, self.top),
             (self.left, self.top)])
 
-    def draw(self, surface, camera):
-        camera.draw_rect(surface, self.color, self)
+    def draw(self, surface, camera, color):
+        camera.draw_rect(surface, color, self)
 
         
 

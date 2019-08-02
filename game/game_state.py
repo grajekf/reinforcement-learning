@@ -1,4 +1,6 @@
-from game import Game
+import numpy as np
+
+from game.game import Game
 
 class GameState:
 
@@ -13,12 +15,12 @@ class GameState:
         second_team = []
         ball = []
 
-        for player in game.home_team:
+        for player in game.home_team.players:
             x, y = player.get_position()
             vx, vy = player.get_velocity()
             first_team.append([x, y, vx, vy])
 
-        for player in game.away_team:
+        for player in game.away_team.players:
             x, y = player.get_position()
             vx, vy = player.get_velocity()
             second_team.append([x, y, vx, vy])

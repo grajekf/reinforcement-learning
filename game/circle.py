@@ -3,7 +3,7 @@ import math
 import numpy as np
 from Box2D import b2FixtureDef, b2CircleShape, b2Transform
 
-import physics
+import game.physics
 
 class Circle:
 
