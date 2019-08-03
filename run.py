@@ -4,6 +4,10 @@ import argparse
 import json
 
 import pygame
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+import tensorflow as tf
+tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 
 from game.player_position_generator import RandomPlayerPositionGenerator
 from game.game import Game
@@ -32,21 +36,22 @@ def main():
     player_position_generator = RandomPlayerPositionGenerator()
     game = Game.from_config(game_config, player_position_generator)
 
-    first_player = FeedforwardModel([50, 50, 50, 50], 'tanh', game_config["team_size"])
-    second_player = FeedforwardModel([50, 50, 50, 50], 'tanh', game_config["team_size"])
+    first_player = FeedforwardModel.create([50, 50, 50, 50], 'tanh', game_config["team_size"])
+    second_player = FeedforwardModel.create([50, 50, 50, 50], 'tanh', game_config["team_size"])
 
-    repeats = 5
+    repeats = 1
     time_step = 1/30.0
 
     match = Match(first_player, second_player, repeats, game, time_step)
 
-    size = (1400, 800)
-    pygame.init()
-    screen = pygame.display.set_mode(size)
-    pygame.display.set_caption("Test")
-    camera = Camera([0, 0], 35, size)
+#     size = (1400, 800)
+#     pygame.init()
+#     screen = pygame.display.set_mode(size)
+#     pygame.display.set_caption("Test")
+#     camera = Camera([0, 0], 35, size)
 
-    match.simulate(True, camera=camera, surface=screen)
+#     match.simulate(True, camera=camera, surface=screen)
+    match.simulate(False)
 
 
 if __name__ == "__main__":

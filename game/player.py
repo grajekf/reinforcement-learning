@@ -10,12 +10,13 @@ EPS = 1e-5
 
 class Player(Circle):
 
-    def __init__(self, position, radius, weight, kick_radius, kick_max_force, kick_wait_time, max_speed):
+    def __init__(self, position, radius, weight, kick_radius, kick_max_force, kick_wait_time, max_speed, max_run_force):
         super().__init__(position, radius, weight)
         self.foot = Circle(position, radius * FOOT_RADIUS_RATIO, weight * FOOT_WEIGHT_RATIO)
         self.kick_radius = kick_radius
         self.kick_max_force = kick_max_force
         self.max_speed = max_speed
+        self.max_run_force = max_run_force
         self.kick_wait_time = kick_wait_time
         self.time_since_last_kick = kick_wait_time
 
@@ -32,7 +33,7 @@ class Player(Circle):
         kick_max_force = kick["max_momentum"]
         kick_wait_time = kick["wait_time"]
 
-        return Player([0, 0], radius, weight, kick_radius, kick_max_force, kick_wait_time, max_v)
+        return Player([0, 0], radius, weight, kick_radius, kick_max_force, kick_wait_time, max_v, max_run_force)
 
     def draw(self, surface, camera, color):
         camera.draw_circle(surface, color, self.position, self.radius)
@@ -55,7 +56,10 @@ class Player(Circle):
                 ball.add_velocity(ball_impulse_vector)
 
                 # maybe reset always when kicking, even when the player misses?
-                self.time_since_last_kick = 0
+            self.time_since_last_kick = 0
+
+    def accelerate(self, power):
+        self.apply_force(power * self.max_run_force)
 
     def update(self, passed_time):
         super().update(passed_time)
@@ -69,3 +73,8 @@ class Player(Circle):
             self.body.setLinearVelocity(new_velocity.tolist())
             
         self.time_since_last_kick += passed_time
+
+    def execute_command(self, command, ball):
+        self.accelerate(command.accel)
+        if command.kick > 0.0:
+            self.do_kick(ball, command.kick)

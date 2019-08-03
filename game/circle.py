@@ -9,6 +9,7 @@ class Circle:
 
     def __init__(self, position, radius, weight, movable = True):
         self.position = np.array(position)
+        self.velocity = np.array([0, 0])
         self.radius = radius
         self.weight = weight
         self.density = weight / (np.pi * radius**2)
@@ -25,17 +26,24 @@ class Circle:
                 fixedRotation=True,
                 angularDamping=5,
                 linearDamping=friction)
+
+            self.set_velocity(self.velocity)
         else:
             self.body = world.CreateStaticBody(position=self.position.tolist(), shapes=b2CircleShape(radius=self.radius))
 
     def update(self, passedTime):
         self.position = np.array(self.body.position)
 
+    def apply_force(self, force):
+        self.body.ApplyForce(force.tolist(), self.body.worldCenter, True)
+
     def add_velocity(self, velocity):
         self.body.ApplyLinearImpulse(velocity.tolist(), self.body.worldCenter, True)
+        self.velocity = np.array(self.body.linearVelocity)
 
     def set_velocity(self, velocity):
         self.body.linearVelocity = velocity.tolist()
+        self.velocity = velocity
 
     def set_position(self, position):
         self.position = np.array(position)

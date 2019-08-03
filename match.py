@@ -18,7 +18,6 @@ class Match:
 
         self.game.init_physics()
 
-        print(self.repeats)
         for i in range(self.repeats):
             clock = pygame.time.Clock()
             self.game.reset()
@@ -29,8 +28,10 @@ class Match:
                 first_team_state = GameState.from_game(self.game)
                 second_team_state = first_team_state.get_complement()
 
-                self.first_model.get_next_moves(first_team_state)
-                self.second_model.get_next_moves(second_team_state)
+                home_moves = self.first_model.get_next_moves(first_team_state)
+                away_moves = self.second_model.get_next_moves(second_team_state)
+
+                self.game.execute_commands(home_moves, away_moves)
 
                 self.game.update(self.time_step)
 
@@ -49,6 +50,8 @@ class Match:
                     pygame.display.flip()
 
                 clock.tick()
+            
+            self.final_scores.append((self.game.home_score, self.game.away_score))
 
 
     

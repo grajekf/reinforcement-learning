@@ -12,7 +12,7 @@ from game.team import Team
 
 class Game:
 
-    def __init__(self, ball, home_team, away_team, home_goal, away_goal, field, duration, friction, player_position_generator):
+    def __init__(self, ball, home_team, away_team, home_goal, away_goal, field, duration, friction, player_position_generator, verbose = True):
         self.ball = ball
         self.home_team = home_team
         self.away_team = away_team
@@ -28,6 +28,7 @@ class Game:
         self.home_score = 0
         self.away_score = 0
         self.player_position_generator = player_position_generator
+        self.verbose = verbose
 
     @classmethod
     def from_config(cls, config, player_position_generator):
@@ -79,6 +80,9 @@ class Game:
         self.current_time += passed_time
         if self.current_time >= self.duration:
             self.finished = True
+            if self.verbose:
+                print("Game finished")
+                print(f"Final score: {self.home_score} - {self.away_score}")
 
     def get_time_minutes_and_seconds(self):
         minutes = int(self.current_time // 60)
@@ -101,17 +105,28 @@ class Game:
         screen_width = surface.get_width()
         surface.blit(text_surface, (screen_width - 200, 5))
 
+    def execute_commands(self, home_commands, away_commands):
+        for player, command in zip(self.home_team.players, home_commands):
+            player.execute_command(command, self.ball)
+
+        for player, command in zip(self.away_team.players, away_commands):
+            player.execute_command(command, self.ball)
+
     def notify_home_goal(self, ball):
-        print("Goal for the away team!")
+        if self.verbose:
+            print("Goal for the away team!")
         self.away_score += 1
-        print(f"Score: {self.home_score} - {self.away_score}")
+        if self.verbose:
+            print(f"Score: {self.home_score} - {self.away_score}")
         self.reset_ball()
         self.reset_players()
 
     def notify_away_goal(self, ball):
-        print("Goal for the home team!")
+        if self.verbose:
+            print("Goal for the home team!")
         self.home_score += 1
-        print(f"Score: {self.home_score} - {self.away_score}")
+        if self.verbose:
+            print(f"Score: {self.home_score} - {self.away_score}")
         self.reset_ball()
         self.reset_players()
 
@@ -138,6 +153,9 @@ class Game:
         self.reset_players()
 
         del self.world
+
+        if self.verbose:
+            print("Match started!")
 
 
         
