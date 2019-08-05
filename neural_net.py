@@ -62,6 +62,13 @@ class FeedforwardModel:
 
         return commands
 
+    def get_weights(self):
+        return np.array(self.model.get_weights()).flatten()
+
+    def set_weights(self, weights):
+        weights_shape = np.array(self.model.get_weights()).shape
+        self.model.set_weights(np.array(weights).reshape(weights_shape))
+
 
 
 

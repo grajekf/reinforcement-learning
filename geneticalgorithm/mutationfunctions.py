@@ -1,16 +1,13 @@
 import numpy as np
 from geneticalgorithm.mutationfunctor import MutationFunctor
 
-class UniformIntegerMutation(MutationFunctor):
+from abc import ABC
 
+
+class MutationBase(MutationFunctor):
     def __init__(self, mutation_rate, mutation_variance):
         self.mutation_rate = mutation_rate
         self.mutation_variance = mutation_variance
-
-    def mutate(self, original):
-        # noise = (np.random.random(size=original.shape) < self.mutation_rate) * np.random.random_integers(-self.mutation_variance, self.mutation_variance, size=original.shape)
-        noise = (np.random.random(size=original.shape) < self.mutation_rate) * np.random.choice(range(-self.mutation_variance, self.mutation_variance + 1), size=original.shape)
-        return original +  noise
 
     def getparameters(self):
         return {
@@ -27,3 +24,22 @@ class UniformIntegerMutation(MutationFunctor):
             self.mutation_variance = value
             changed = True
         return changed
+    
+class UniformIntegerMutation(MutationBase):
+
+    def __init__(self, mutation_rate, mutation_variance):
+        super(mutation_rate, mutation_variance)
+
+    def mutate(self, original):
+        # noise = (np.random.random(size=original.shape) < self.mutation_rate) * np.random.random_integers(-self.mutation_variance, self.mutation_variance, size=original.shape)
+        noise = (np.random.random(size=original.shape) < self.mutation_rate) * np.random.choice(range(-self.mutation_variance, self.mutation_variance + 1), size=original.shape)
+        return original + noise
+
+
+class GaussianMutation(MutationBase):
+    def __init__(self, mutation_rate, mutation_variance):
+        super(mutation_rate, mutation_variance)
+
+    def mutate(self, original):
+        noise = (np.random.random(size=original.shape) < self.mutation_rate) * np.random.normal(original, self.mutation_variance)
+        return original + noise

@@ -18,6 +18,10 @@ class Model():
             return fitness_function(population)
         return inner
 
+    def set_parameters(self, parameters_dict):
+        for key, value in parameters_dict.items():
+            self.output_layer.setparameter(key, value)
+
     def run(self, initial_population, stopping_criterion, subscribers = []):
         self.generation = 1
         self.current_uses = 0

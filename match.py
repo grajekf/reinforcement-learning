@@ -1,4 +1,5 @@
 import pygame
+import numpy as np
 
 from game.game_state import GameState
 from colors import *
@@ -13,6 +14,9 @@ class Match:
         self.time_step = time_step
 
         self.final_scores = []
+
+    def get_average_score(self):
+        np.mean(map(self.final_scores, lambda score: score[0] - score[1]))
 
     def simulate(self, do_draw, **kwargs):
 

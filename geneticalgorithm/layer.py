@@ -48,7 +48,7 @@ class Layer(Parametrisible, ABC):
     def setparameter(self, key, value):
         changed = self._setparameter(key, value)
         for i in self.inputs:
-            changed = changed or i.setparameter(key, value)
+            changed = i.setparameter(key, value) or changed
         return changed
 
 

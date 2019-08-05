@@ -20,24 +20,30 @@ from match import Match
 def args():
     parser = argparse.ArgumentParser()
     parser.add_argument("-g", "--game_config", required=True)
+    parser.add_argument("-e", "--evol_config", required=True)
     parser.add_argument("--train", action="store_true")
 
     args =  parser.parse_args()
-    return args.game_config, args.train
+    return args.game_config, args.evol_config, args.train
 
 def load_config(path):
     with open(path, 'r') as json_file:
         return json.load(json_file)
 
 def main():
-    game_config_path, do_train = args()
+    game_config_path, evol_config_path, do_train = args()
 
     game_config = load_config(game_config_path)
+    evol_config = load_config(evol_config_path)
     player_position_generator = RandomPlayerPositionGenerator()
     game = Game.from_config(game_config, player_position_generator)
 
     first_player = FeedforwardModel.create([50, 50, 50, 50], 'tanh', game_config["team_size"])
     second_player = FeedforwardModel.create([50, 50, 50, 50], 'tanh', game_config["team_size"])
+
+    test = first_player.get_weights()
+    print(test)
+    first_player.set_weights(test)
 
     repeats = 1
     time_step = 1/30.0
@@ -51,7 +57,7 @@ def main():
 #     camera = Camera([0, 0], 35, size)
 
 #     match.simulate(True, camera=camera, surface=screen)
-    match.simulate(False)
+#     match.simulate(False)
 
 
 if __name__ == "__main__":
