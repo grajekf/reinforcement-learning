@@ -63,11 +63,16 @@ class FeedforwardModel:
         return commands
 
     def get_weights(self):
-        return np.array(self.model.get_weights()).flatten()
+        weights = np.array([])
+        for layer_weights in self.model.get_weights():
+            weights = np.hstack((weights, layer_weights.flatten().flatten()))
+        return weights
 
     def set_weights(self, weights):
-        weights_shape = np.array(self.model.get_weights()).shape
-        self.model.set_weights(np.array(weights).reshape(weights_shape))
+        weights_cutoff_indices = np.cumsum([layer_weights.size for layer_weights in self.model.get_weights()])
+        splitted_weights = np.split(weights, weights_cutoff_indices)
+        reshaped_weights = [new_weights.reshape(old_weights.shape) for new_weights, old_weights in zip(splitted_weights[:-1], self.model.get_weights())]
+        self.model.set_weights(reshaped_weights)
 
 
 
