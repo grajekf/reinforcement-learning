@@ -1,0 +1,4 @@
+{
+    "layer_sizes": [50, 50, 50, 50],
+    "activation": "tanh"
+}
