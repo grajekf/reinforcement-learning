@@ -16,7 +16,7 @@ class Match:
         self.final_scores = []
 
     def get_average_score(self):
-        np.mean(map(self.final_scores, lambda score: score[0] - score[1]))
+        return np.mean(list(map(lambda score: score[0] - score[1], self.final_scores)))
 
     def simulate(self, do_draw, **kwargs):
 

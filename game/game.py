@@ -101,9 +101,12 @@ class Game:
         #draw time and score
         font = pygame.font.SysFont(pygame.font.get_default_font(), 24)
         minutes, seconds = self.get_time_minutes_and_seconds()
-        text_surface = font.render(f"Time: {minutes:02d}:{seconds:02d}",True, (255, 255, 255))
+        text_surface = font.render(f"Time: {minutes:02d}:{seconds:02d}", True, (255, 255, 255))
         screen_width = surface.get_width()
         surface.blit(text_surface, (screen_width - 200, 5))
+
+        score_surface = font.render(f"Score: {self.home_score} - {self.away_score}", True, (255, 255, 255))
+        surface.blit(score_surface, (screen_width - 400, 5))
 
     def execute_commands(self, home_commands, away_commands):
         for player, command in zip(self.home_team.players, home_commands):

@@ -1,8 +1,8 @@
 {
-    "population_size": 10,
+    "population_size": 20,
     "mutation_rate": 0.05,
     "mutation_variance": 0.1,
     "elitism": 1,
-    "generation_count": 100,
+    "generation_count": 200,
     "tournament_size": 2
 }

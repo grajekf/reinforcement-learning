@@ -70,7 +70,7 @@ class Player(Circle):
             new_velocity = self.max_speed * normalized
 
             print("Max velocity reached!")
-            self.body.setLinearVelocity(new_velocity.tolist())
+            self.body.linearVelocity = new_velocity.tolist()
             
         self.time_since_last_kick += passed_time
 

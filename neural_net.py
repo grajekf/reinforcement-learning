@@ -9,11 +9,12 @@ from game.game_command import GameCommand
 
 class FeedforwardModel:
 
-    def __init__(self, inner_model):
+    def __init__(self, id, inner_model):
+        self.id = id
         self.model = inner_model
 
     @classmethod
-    def create(cls, layer_sizes, activation, player_count):
+    def create(cls, id, layer_sizes, activation, player_count):
         inputs = Input(shape=(8 * player_count + 4, ))
 
         layer = inputs
@@ -24,15 +25,15 @@ class FeedforwardModel:
         outputs = Dense(8 * player_count, activation=activation)(layer)
 
         model = Model(inputs=inputs, outputs=outputs)
-        return FeedforwardModel(model)
+        return FeedforwardModel(id, model)
 
     def save(self, path):
         save_model(self.model, path)
 
     @classmethod
-    def load(cls, path):
+    def load(cls, id, path):
         inner_model = load_model(path)
-        return FeedforwardModel(inner_model)
+        return FeedforwardModel(id, inner_model)
 
 
     def get_next_moves(self, game_state):
